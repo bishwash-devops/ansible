@@ -1,0 +1,73 @@
+- block: 
+  - name: Create User for Hadoop
+    user: 
+      name: "{{user}}"
+      generate_ssh_key: yes
+  become: yes
+  
+- block:
+  - name: Read Public Key
+    slurp:
+      src: /home/hadmin/.ssh/id_rsa.pub
+    register: pubkey
+
+  - name: Add SSH key to authorized_keys
+    authorized_key:
+      user: "{{user}}"
+      state: present
+      key: "{{ pubkey['content'] | b64decode }}"
+      
+  - name: Create {{basedir}} directory
+    file:
+      path: "{{basedir}}"
+      state: directory
+      mode: 0755
+      owner: "{{user}}"
+      group: "{{user}}" 
+      
+  - name: Download {{hadoop.version}}
+    unarchive:
+      src: "http://mirror.reverse.net/pub/apache/hadoop/common/{{hadoop.version}}/{{hadoop.version}}.tar.gz"
+      dest: "{{basedir}}"
+      remote_src: yes
+      creates: "{{basedir}}/{{hadoop.version}}"
+  
+  - name: Create Symbolic link to hadoop version
+    file:
+      dest: "{{hadoop.home}}"
+      src: "{{basedir}}/{{hadoop.version}}"
+      state: link
+      
+  - name: Set Environment Variables for the User
+    lineinfile:
+      path: "/home/{{user}}/.bashrc"
+      line: "{{item}}"
+      state: present
+    with_items:
+      - "export HADOOP_HOME={{hadoop.home}}"
+      - export HADOOP_INSTALL=$HADOOP_HOME
+      - export HADOOP_MAPRED_HOME=$HADOOP_HOME
+      - export HADOOP_COMMON_HOME=$HADOOP_HOME
+      - export HADOOP_HDFS_HOME=$HADOOP_HOME
+      - export YARN_HOME=$HADOOP_HOME
+      - export HADOOP_COMMON_LIB_NATIVE_DIR=$HADOOP_HOME/lib/native
+      - export PATH=$PATH:$HADOOP_HOME/sbin:$HADOOP_HOME/bin
+  
+  - name: Update JAVA_HOME={{jdk_home}} in hadoop-env.sh
+    lineinfile:
+      path: "{{hadoop.home}}/etc/hadoop/hadoop-env.sh"
+      regexp: "export JAVA_HOME="
+      line: "export JAVA_HOME={{jdk_home}}"
+      state: present
+
+  - name: Setup Hadoop Configuration files
+    template:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - {src: hdfs-site.xml.j2, dest: "{{hadoop.home}}/etc/hadoop/hdfs-site.xml"}
+      - {src: core-site.xml.j2, dest: "{{hadoop.home}}/etc/hadoop/core-site.xml"}
+      - {src: mapred-site.xml.j2, dest: "{{hadoop.home}}/etc/hadoop/mapred-site.xml"}
+    notify: Format NameNode
+  become: yes
+  become_user: "{{user}}"

@@ -1,0 +1,21 @@
+- hosts: all
+  vars:
+    - user: hadmin
+    - basedir: "/opt/{{user}}"
+    - jdk:
+        version: java-1.8.0-openjdk
+    - hadoop:
+        home: "{{basedir}}/hadoop"
+        version: hadoop-2.7.4
+        hdfs_properties:
+          - { name: dfs.replication, value: 1 }
+          - { name: dfs.name.dir, value: "file:///{{basedir}}/hadoop/data/hdfs/namenode" }
+          - { name: dfs.data.dir, value: "file:///{{basedir}}/hadoop/data/hdfs/datanode" }
+        core_properties:
+          - { name: fs.default.name, value: "hdfs://{{ansible_default_ipv4.address}}:9000" }
+        mapred_properties:
+          - { name: mapreduce.framework.name, value: yarn }
+  roles:
+    - { role: common, tags: ['common','hadoop'], become: yes }
+    - { role: hadoop, tags: ['hadoop'] }
+    

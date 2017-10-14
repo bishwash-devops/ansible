@@ -1,0 +1,4 @@
+- name: Format NameNode
+  shell: "echo N | {{hadoop.home}}/bin/hadoop namenode -format"
+  no_log: True
+  ignore_errors: yes

@@ -1,0 +1,16 @@
+- name: Install Required Packages
+  yum: 
+    name: "{{item}}"
+    state: present
+  with_items:
+    - "{{jdk.version}}"
+    - "{{jdk.version}}-devel"
+    - git
+    - "@Development tools"
+    
+- name: Find JAVA_HOME
+  shell: "find /usr/lib/jvm/*{{jdk.version}}* -maxdepth 0 -type d"
+  register: jdk_path
+
+- set_fact:
+    jdk_home: "{{jdk_path.stdout}}"
