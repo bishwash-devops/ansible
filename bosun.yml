@@ -15,7 +15,18 @@
           - { name: fs.default.name, value: "hdfs://{{ansible_default_ipv4.address}}:9000" }
         mapred_properties:
           - { name: mapreduce.framework.name, value: yarn }
+    - hbase:
+        home: "{{basedir}}/hbase"
+        ver: 1.2.6
+        version: hbase-1.2.6
+        hbase_properties:
+          - { name: hbase.rootdir, value: "hdfs://{{ansible_default_ipv4.address}}:9000/hbase" }
+          - { name: hbase.cluster.distributed, value: "true" }
+          - { name: hbase.zookeeper.property.dataDir, value: "hdfs://{{ansible_default_ipv4.address}}:9000/zookeeper" }
+          - { name: hbase.zookeeper.quorum, value: "{{ansible_default_ipv4.address}}" }
+          - { name: hbase.zookeeper.property.clientPort, value: "2181" }
   roles:
-    - { role: common, tags: ['common','hadoop'], become: yes }
-    - { role: hadoop, tags: ['hadoop'] }
+    - { role: common, tags: ['common'], become: yes }
+    - { role: hadoop, tags: ['common','hadoop'] }
+    - { role: hbase, tags: ['common','hbase'] }
     

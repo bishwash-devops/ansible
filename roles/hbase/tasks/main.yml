@@ -1,0 +1,45 @@
+- block:
+  - name: Downlaod {{hbase.version}}
+    unarchive:
+      src: http://apache.claz.org/hbase/{{hbase.ver}}/{{hbase.version}}-bin.tar.gz
+      dest: "{{basedir}}"
+      remote_src: yes
+      creates: "{{basedir}}/{{hbase.version}}"
+      
+  - name: Create Symbolic link to {{hbase.version}}
+    file:
+      dest: "{{hbase.home}}"
+      src: "{{basedir}}/{{hbase.version}}"
+      state: link
+      
+  - name: Set Environment Variables for the User
+    lineinfile:
+      path: "/home/{{user}}/.bashrc"
+      line: "{{item}}"
+      state: present
+    with_items:
+      - "export HBASE_HOME={{hbase.home}}"
+      - export PATH=$PATH:$HBASE_HOME/bin
+  
+  - name: Update hbase-env.sh
+    lineinfile:
+      path: "{{hbase.home}}/conf/hadoop-env.sh"
+      regexp: "{{item.regexp}}"
+      line: "{{item.line}}"
+      state: present
+    with_items:
+      - { regexp: "export JAVA_HOME=", line: "export JAVA_HOME={{jdk_home}}" }
+      - { regexp: "export HBASE_MANAGES_ZK=", line: "export HBASE_MANAGES_ZK=true" }
+      - { regexp: "export HBASE_PID_DIR=", line: "export HBASE_PID_DIR={{hbase.home}}/pids" }
+
+  - name: Setup Hadoop Configuration files
+    template:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - {src: hbase-site.xml.j2, dest: "{{hbase.home}}/conf/hbase-site.xml"}
+      - {src: regionservers.j2, dest: "{{hbase.home}}/conf/regionservers"}
+    
+  become: yes
+  become_user: "{{user}}"
+  
