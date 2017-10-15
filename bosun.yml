@@ -25,8 +25,10 @@
           - { name: hbase.zookeeper.property.dataDir, value: "hdfs://{{ansible_default_ipv4.address}}:9000/zookeeper" }
           - { name: hbase.zookeeper.quorum, value: "{{ansible_default_ipv4.address}}" }
           - { name: hbase.zookeeper.property.clientPort, value: "2181" }
+    - opentsdb:
+        home: "{{basedir}}/opentsdb"
   roles:
-    - { role: common, tags: ['common','hadoop','hbase'], become: yes }
-    - { role: hadoop, tags: ['common','hadoop'] }
-    - { role: hbase, tags: ['common','hbase'] }
-    
+    - { role: common, tags: ['common','hadoop','hbase','opentsdb'], become: yes }
+    - { role: hadoop, tags: ['hadoop'] }
+    - { role: hbase, tags: ['hbase'] }
+    - { role: opentsdb, tags: ['opentsdb'] }

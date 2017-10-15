@@ -1,0 +1,22 @@
+- block:
+  - name: Clone OpenTSDB GIT Repo
+    git: 
+      repo: 'git://github.com/OpenTSDB/opentsdb.git'
+      dest: "{{opentsdb.home}}"
+      
+  - name: Run {{opentsdb.home}}/build.sh
+    command: "./build.sh"
+    args: 
+      chdir: "{{opentsdb.home}}"
+        
+  - name: Set Environment Variables for the User
+    lineinfile:
+      path: "/home/{{user}}/.bashrc"
+      line: "{{item}}"
+      state: present
+    with_items:
+      - "export OPENTSDB_HOME={{opentsdb.home}}"
+      - export PATH=$PATH:$OPENTSDB_HOME/build
+        
+  become: yes
+  become_user: "{{user}}"
