@@ -3,11 +3,13 @@
     git: 
       repo: 'git://github.com/OpenTSDB/opentsdb.git'
       dest: "{{opentsdb.home}}"
+      update: no
       
   - name: Run {{opentsdb.home}}/build.sh
     command: "./build.sh"
     args: 
       chdir: "{{opentsdb.home}}"
+      creates: "{{opentsdb.home}}/build"
         
   - name: Set Environment Variables for the User
     lineinfile:
@@ -17,6 +19,26 @@
     with_items:
       - "export OPENTSDB_HOME={{opentsdb.home}}"
       - export PATH=$PATH:$OPENTSDB_HOME/build
+
+  - name: Copy Configuration to {{opentsdb.home}}/opentsdb.conf
+    copy:
+      src: "{{opentsdb.home}}/src/opentsdb.conf"
+      dest: "{{opentsdb.home}}/opentsdb.conf"
+      remote_src: yes
         
+  - name: Configure OpenTSDB with HBase Cluster
+    lineinfile:
+      path: "{{opentsdb.home}}/opentsdb.conf"
+      regexp: "{{item.regexp}}"
+      line: "{{item.line}}"
+      state: present
+    with_items:
+      - { regexp: "tsd.http.staticroot =", line: "tsd.http.staticroot = {{opentsdb.staticroot}}" }
+      - { regexp: "tsd.http.cachedir =", line: "tsd.http.cachedir = {{opentsdb.cachedir}}" }
+      - { regexp: "tsd.storage.hbase.zk_quorum =", line: "tsd.storage.hbase.zk_quorum = {{opentsdb.zk_quorum}}" }
+      - { regexp: "tsd.network.bind =", line: "tsd.network.bind = {{opentsdb.network_bind}}" }
+      - { regexp: "tsd.network.port =", line: "tsd.network.port = {{opentsdb.port}}" }
+      
+
   become: yes
   become_user: "{{user}}"

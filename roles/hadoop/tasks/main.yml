@@ -3,6 +3,14 @@
     user: 
       name: "{{user}}"
       generate_ssh_key: yes
+      
+  - name: Create {{basedir}} directory
+    file:
+      path: "{{basedir}}"
+      state: directory
+      mode: 0755
+      owner: "{{user}}"
+      group: "{{user}}" 
   become: yes
   
 - block:
@@ -17,13 +25,7 @@
       state: present
       key: "{{ pubkey['content'] | b64decode }}"
       
-  - name: Create {{basedir}} directory
-    file:
-      path: "{{basedir}}"
-      state: directory
-      mode: 0755
-      owner: "{{user}}"
-      group: "{{user}}" 
+
       
   - name: Download {{hadoop.version}}
     unarchive:

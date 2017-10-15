@@ -27,6 +27,11 @@
           - { name: hbase.zookeeper.property.clientPort, value: "2181" }
     - opentsdb:
         home: "{{basedir}}/opentsdb"
+        staticroot: "{{basedir}}/opentsdb/build/staticroot"
+        cachedir: "{{basedir}}/opentsdb/cache"
+        zk_quorum: "{{ansible_default_ipv4.address}}"
+        network_bind: "{{ansible_default_ipv4.address}}"
+        port: 4242
   roles:
     - { role: common, tags: ['common','hadoop','hbase','opentsdb'], become: yes }
     - { role: hadoop, tags: ['hadoop'] }

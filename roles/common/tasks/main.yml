@@ -7,6 +7,7 @@
     - "{{jdk.version}}-devel"
     - git
     - "@Development tools"
+    - firewalld
     
 - name: Find JAVA_HOME
   shell: "find /usr/lib/jvm/*{{jdk.version}}* -maxdepth 0 -type d"
@@ -14,3 +15,16 @@
 
 - set_fact:
     jdk_home: "{{jdk_path.stdout}}"
+    
+- name: Open TCP Ports
+  firewalld:
+    port: "{{item}}"
+    permanent: true
+    state: enabled
+    zone: public
+    immediate: yes
+  with_items:
+    - "50070/tcp"
+    - "8088/tcp"
+    - "16010/tcp"
+    - "4242/tcp"
