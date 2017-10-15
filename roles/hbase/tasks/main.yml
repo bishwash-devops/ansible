@@ -23,7 +23,7 @@
   
   - name: Update hbase-env.sh
     lineinfile:
-      path: "{{hbase.home}}/conf/hadoop-env.sh"
+      path: "{{hbase.home}}/conf/hbase-env.sh"
       regexp: "{{item.regexp}}"
       line: "{{item.line}}"
       state: present

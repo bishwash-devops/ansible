@@ -26,7 +26,7 @@
           - { name: hbase.zookeeper.quorum, value: "{{ansible_default_ipv4.address}}" }
           - { name: hbase.zookeeper.property.clientPort, value: "2181" }
   roles:
-    - { role: common, tags: ['common'], become: yes }
+    - { role: common, tags: ['common','hadoop','hbase'], become: yes }
     - { role: hadoop, tags: ['common','hadoop'] }
     - { role: hbase, tags: ['common','hbase'] }
     
