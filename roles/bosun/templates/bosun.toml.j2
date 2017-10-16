@@ -1,0 +1,9 @@
+# Path to the rule file (file that contains definitions for alerts, macros, lookups, templates, and notifications)
+RuleFilePath = "rules.conf"
+
+[OpenTSDBConf]
+	Host = "{{opentsdb.network_bind}}:{{opentsdb.port}}"
+	# Default is 2.1, certain features like filters are enabled when the version is set to 2.2
+	Version = 2.2
+	# ResponseLimit will make requests error if the response from opentsdb is larger than this setting in bytes. Default of 1MB
+	ResponseLimit = 25000000

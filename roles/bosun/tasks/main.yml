@@ -1,0 +1,28 @@
+- block: 
+  - name: Create Directory for Bosun
+    file:
+      path: "{{bosun.home}}"
+      state: directory
+ 
+  - name: Download Bosun Binary
+    get_url:
+      url: https://github.com/bosun-monitor/bosun/releases/download/0.6.0-beta1/bosun-linux-amd64
+      dest: "{{bosun.home}}/bosun"
+      mode: 0755
+      
+  - name: Install Bosun Cofiguration files
+    template:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: bosun.toml.j2, dest: "{{bosun.home}}/bosun.toml" }
+      
+  - name: Copy rules.conf
+    copy:
+      src: "{{item.src}}"
+      dest: "{{item.dest}}"
+    with_items:
+      - { src: rules.conf, dest: "{{bosun.home}}/rules.conf" }
+      
+  become: yes
+  become_user: "{{user}}"

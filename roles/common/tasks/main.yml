@@ -23,8 +23,4 @@
     state: enabled
     zone: public
     immediate: yes
-  with_items:
-    - "50070/tcp"
-    - "8088/tcp"
-    - "16010/tcp"
-    - "4242/tcp"
+  with_items: "{{tcp_ports}}"

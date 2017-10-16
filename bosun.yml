@@ -2,6 +2,12 @@
   vars:
     - user: hadmin
     - basedir: "/opt/{{user}}"
+    - tcp_ports:         
+      - "50070/tcp"
+      - "8088/tcp"
+      - "16010/tcp"
+      - "4242/tcp"
+      - "8070/tcp"
     - jdk:
         version: java-1.8.0-openjdk
     - hadoop:
@@ -32,8 +38,12 @@
         zk_quorum: "{{ansible_default_ipv4.address}}"
         network_bind: "{{ansible_default_ipv4.address}}"
         port: 4242
+    - bosun:
+        home: "{{basedir}}/bosun"
   roles:
-    - { role: common, tags: ['common','hadoop','hbase','opentsdb'], become: yes }
+    - { role: common, tags: ['common','hadoop','hbase','opentsdb','bosun'], become: yes }
+    - { role: golang, tags: ['golang',bosun], become: yes }
     - { role: hadoop, tags: ['hadoop'] }
     - { role: hbase, tags: ['hbase'] }
     - { role: opentsdb, tags: ['opentsdb'] }
+    - { role: bosun, tags: ['bosun'] }

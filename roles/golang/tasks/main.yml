@@ -1,0 +1,18 @@
+- get_url: 
+    url: https://mirror.go-repo.io/centos/RPM-GPG-KEY-GO-REPO
+    dest: /tmp/RPM-GPG-KEY-GO-REPO
+ 
+- name: Get Go Repo
+  get_url:
+    url: https://mirror.go-repo.io/centos/go-repo.repo
+    dest: /etc/yum.repos.d/go-repo.repo
+
+- name: Import RPM GPG KEY for GO Repo
+  rpm_key: 
+    state: present
+    key: /tmp/RPM-GPG-KEY-GO-REPO
+    
+- name: Install golang
+  yum:
+    name: golang
+    state: latest

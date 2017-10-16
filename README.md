@@ -11,9 +11,14 @@ Clone this repository - $ cd ~ && git clone https://github.com/bishwash-devops/a
 Run the Playbook:
 $ ansible-playbook -i 'localhost,' -c local bosun.yml
 
-Once It Complete's without errors:
+Once The Ansible Playbook is Executed without any errors:
 Switch user:
 $ sudo su hadmin
+
+Run following commands:
+
+$ hdfs namenode -format
+Note: If prompted for reformat hit N
 
 Start Hadoop:
 $ start-dfs.sh
@@ -27,5 +32,20 @@ $ start-hbase.sh
 
 Access Hbase Web: http://PUBLIC_IP:16010
 Validate: Make sure at least 1 of the regionservers is running
+
+Start Opentsdb
+$ cd /opt/hadmin/opentsdb
+$ nohup ./build/tsdb tsd &
+
+Acess Opentsdb Web: http://PUBLIC_IP:4242
+
+Start Bosun
+$ cd /opt/hadmin/bosun
+$ nohup ./bosun &
+
+Access Bosun Web: http://PUBLIC_IP:8070
+
+
+
 
 
