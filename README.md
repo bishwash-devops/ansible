@@ -35,6 +35,7 @@ Validate: Make sure at least 1 of the regionservers is running
 
 Start Opentsdb
 $ cd /opt/hadmin/opentsdb
+$ env COMPRESSION=NONE ./src/create_table.sh
 $ nohup ./build/tsdb tsd &
 
 Acess Opentsdb Web: http://PUBLIC_IP:4242
