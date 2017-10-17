@@ -25,3 +25,17 @@
     immediate: yes
   ignore_errors: yes
   with_items: "{{tcp_ports}}"
+
+- name: Create User for Hadoop
+  user: 
+    name: "{{user}}"
+    generate_ssh_key: yes
+
+- name: Create {{basedir}} directory
+  file:
+    path: "{{basedir}}"
+    state: directory
+    mode: 0755
+    owner: "{{user}}"
+    group: "{{user}}" 
+  
