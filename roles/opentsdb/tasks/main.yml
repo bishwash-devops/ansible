@@ -1,9 +1,16 @@
 - block:
-  - name: Clone OpenTSDB GIT Repo
-    git: 
-      repo: 'https://github.com/OpenTSDB/opentsdb.git'
+  - name: Download {{opentsdb.version}}
+    unarchive:
+      src: "https://github.com/OpenTSDB/opentsdb/releases/download/{{opentsdb.ver}}/{{opentsdb.version}}.tar.gz"
+      dest: "{{basedir}}"
+      remote_src: yes
+      creates: "{{basedir}}/{{opentsdb.version}}"
+  
+  - name: Create Symbolic link to opentsdb version
+    file:
       dest: "{{opentsdb.home}}"
-      update: no
+      src: "{{basedir}}/{{opentsdb.version}}"
+      state: link
       
   - name: Run {{opentsdb.home}}/build.sh
     command: "./build.sh"
