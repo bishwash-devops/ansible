@@ -33,6 +33,8 @@
           - { name: hbase.zookeeper.property.clientPort, value: "2181" }
     - opentsdb:
         home: "{{basedir}}/opentsdb"
+        ver: v2.3.0
+        version: opentsdb-2.3.0
         staticroot: "{{basedir}}/opentsdb/build/staticroot"
         cachedir: "{{basedir}}/opentsdb/cache"
         zk_quorum: "{{ansible_default_ipv4.address}}"
