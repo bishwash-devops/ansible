@@ -1,7 +1,7 @@
 - block:
   - name: Clone OpenTSDB GIT Repo
     git: 
-      repo: 'git://github.com/OpenTSDB/opentsdb.git'
+      repo: 'https://github.com/OpenTSDB/opentsdb.git'
       dest: "{{opentsdb.home}}"
       update: no
       
