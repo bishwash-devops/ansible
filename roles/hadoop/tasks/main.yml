@@ -1,18 +1,3 @@
-- block: 
-  - name: Create User for Hadoop
-    user: 
-      name: "{{user}}"
-      generate_ssh_key: yes
-      
-  - name: Create {{basedir}} directory
-    file:
-      path: "{{basedir}}"
-      state: directory
-      mode: 0755
-      owner: "{{user}}"
-      group: "{{user}}" 
-  become: yes
-  
 - block:
   - name: Read Public Key
     slurp:
