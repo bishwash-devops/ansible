@@ -1,8 +1,14 @@
-# Ansible Playbooks
+# Installing Bosun with OpenTSDB backend
+Bosun is an open-source monitoring and alerting system by Stack Exchange. To Learn more visit - https://bosun.org/
 
-## Install Hadoop in Centos/Rhel 7
+This ansible playbook automates the following tasks:
+- JDK Installation
+- GoLang Installation
+- Install/Configure HBase to run on top of Hadoop Distributed File System (HDFS)
+- Install OpenTSDB on HBase nodes
+- Install Bosun
 
-In Reference To : http://linuxpitstop.com/configure-distributed-hbase-cluster-on-centos-linux-7/
+Follow the steps given below to get up and running with bosun.
 
 ### Install ansible and git 
 $ sudo yum install -y ansible git
@@ -61,8 +67,4 @@ $ cd /opt/hadmin/bosun
 $ nohup ./bosun &
 
 Access Bosun Web: http://PUBLIC_IP:8070
-
-
-
-
 
